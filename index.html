@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Welcome message and suppress console output -->
+    <script>
+      (function() {
+        // Display welcome message with CSS styling
+        const welcomeMessage = '%cHello, Simrat Singh this side. visit my portfolio or contact me through mail - simratsinghmehra01@gmail.com 👨🏻‍💻';
+        const welcomeStyle = 'color: #000000; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 20px; border-radius: 8px; font-size: 16px; font-weight: bold; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 2px solid #000000; box-shadow: 0 4px 6px rgba(0,0,0,0.1);';
+        console.log(welcomeMessage, welcomeStyle);
+        
+        // Store original console.log for the welcome message
+        const originalLog = console.log;
+        
+        // Override all console methods to suppress output (except we already showed welcome)
+        console.log = function() {};
+        console.info = function() {};
+        console.warn = function() {};
+        console.error = function() {};
+        console.debug = function() {};
+        console.trace = function() {};
+        console.table = function() {};
+        console.group = function() {};
+        console.groupEnd = function() {};
+        console.groupCollapsed = function() {};
+        console.time = function() {};
+        console.timeEnd = function() {};
+        console.assert = function() {};
+        console.count = function() {};
+        console.clear = function() {};
+      })();
+    </script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+    <link rel="apple-touch-icon" href="/logo.jpg" />
+    
+    <!-- Primary Meta Tags -->
+    <title>Simrat Singh | Full Stack Developer</title>
+    <meta name="title" content="Simrat Singh | Full Stack Developer" />
+    <meta name="description" content="Passionate full-stack developer crafting digital experiences. Building innovative solutions with modern technologies like React, Node.js, and more. Available for freelance projects." />
+    <meta name="keywords" content="Simrat Singh, Full Stack Developer, Web Developer, React Developer, Frontend Developer, Backend Developer, JavaScript, TypeScript, Node.js, Portfolio, Freelancer, India" />
+    <meta name="author" content="Simrat Singh" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://simratsingh007.vercel.app/" />
+    <meta property="og:title" content="Simrat Singh | Full Stack Developer" />
+    <meta property="og:description" content="Passionate full-stack developer crafting digital experiences. Building innovative solutions with modern technologies like React, Node.js, and more." />
+    <meta property="og:image" content="/logo.jpg" />
+    <meta property="og:site_name" content="Simrat Singh Portfolio" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://simratsingh007.vercel.app/" />
+    <meta name="twitter:title" content="Simrat Singh | Full Stack Developer" />
+    <meta name="twitter:description" content="Passionate full-stack developer crafting digital experiences. Building innovative solutions with modern technologies like React, Node.js, and more." />
+    <meta name="twitter:image" content="/logo.jpg" />
+    
+    <!-- Additional Meta Tags -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MonteCarlo&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,205 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Admin email - change this to your admin email
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email == 'simratadmin@gmail.com';
+    }
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // ==========================================
+    // SETTINGS - Site configuration
+    // ==========================================
+    match /settings/{settingId} {
+      // Anyone can read settings (for portfolio display)
+      allow read: if true;
+      // Only admin can write
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // PROJECTS - Portfolio projects
+    // ==========================================
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // BLOGS - Blog posts
+    // ==========================================
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // SKILLS - Skills and expertise
+    // ==========================================
+    match /skills/{skillId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // EXPERIENCE - Work experience
+    // ==========================================
+    match /experience/{experienceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // EDUCATION - Education history
+    // ==========================================
+    match /education/{educationId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // TESTIMONIALS - Client testimonials
+    // ==========================================
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // ACHIEVEMENTS - Awards & recognition
+    // ==========================================
+    match /achievements/{achievementId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // CERTIFICATIONS - Professional certifications
+    // ==========================================
+    match /certifications/{certificationId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // SERVICES - Freelance services
+    // ==========================================
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /services_process/{stepId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // QUOTES - Inspirational quotes
+    // ==========================================
+    match /quotes/{quoteId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // HOBBIES - Personal hobbies
+    // ==========================================
+    match /hobbies/{hobbyId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // SOCIAL MEDIA - YouTube, LinkedIn, Instagram
+    // ==========================================
+    match /socialMedia_youtube/{videoId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /socialMedia_linkedin/{postId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /socialMedia_instagram/{postId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // MUSIC - Music playlist
+    // ==========================================
+    match /music/{trackId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // CONTRIBUTIONS - NPM packages, code marketplace, open source
+    // ==========================================
+    match /contributions_npm/{packageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /contributions_selling/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /contributions_opensource/{contribId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // LANGUAGES - Languages I speak
+    // ==========================================
+    match /languages/{languageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // ORGANIZATIONS - Organizations & Associations
+    // ==========================================
+    match /organizations/{organizationId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // CONTACT_SUBMISSIONS - Contact form entries
+    // ==========================================
+    match /contact_submissions/{submissionId} {
+      // Anyone can create (submit contact form)
+      allow create: if true;
+      // Only admin can read and manage
+      allow read, update, delete: if isAdmin();
+    }
+    
+    // ==========================================
+    // ANALYTICS - Site analytics (optional)
+    // ==========================================
+    match /analytics/{docId} {
+      allow read: if isAdmin();
+      allow write: if true; // Allow tracking
+    }
+    
+    // ==========================================
+    // DEFAULT - Deny all other access
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

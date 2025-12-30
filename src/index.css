@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[#FFFFFF] text-gray-800;
+    /* Disable text selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Allow text selection in form inputs */
+  input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+
+  /* Disable image dragging */
+  img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    pointer-events: none;
+  }
+
+  /* Re-enable pointer events for clickable images */
+  a img, button img {
+    pointer-events: auto;
+  }
+}
+
+@layer components {
+  .section-heading {
+    @apply text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800;
+  }
+  
+  .gradient-text {
+    @apply text-[#c8db42];
+  }
+  
+  .card {
+    @apply bg-white rounded-xl p-6 hover:bg-gray-50 transition-all duration-300 shadow-md border border-gray-100;
+  }
+  
+  .btn-primary {
+    @apply bg-[#c8db42] text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-[#b5c93a] transition-all duration-300 shadow-lg hover:shadow-[#c8db42]/25;
+  }
+  
+  .btn-secondary {
+    @apply border-2 border-[#c8db42] text-gray-800 px-6 py-3 rounded-full font-semibold hover:bg-[#c8db42] hover:text-gray-900 transition-all duration-300;
+  }
+}
