@@ -21,7 +21,13 @@ const QUICK_PROMPTS = [
 ]
 
 const createMarkdownComponents = ({ onCvLinkClick }) => ({
-  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+  p: ({ children }) => {
+    const text = typeof children === 'string' ? children : String(children)
+    const linkedText = text
+      .replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '[$1](mailto:$1)')
+      .replace(/(\+?[\d\s\-\(\)]{10,})/g, '[$1](tel:$1)')
+    return <p className="mb-2 last:mb-0">{linkedText}</p>
+  },
   ul: ({ children }) => <ul className="mb-2 list-disc space-y-1 pl-4 last:mb-0">{children}</ul>,
   ol: ({ children }) => <ol className="mb-2 list-decimal space-y-1 pl-4 last:mb-0">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,
@@ -348,7 +354,7 @@ const GeminiChatbot = () => {
         {
           role: 'assistant',
           type: 'error',
-          content: 'Nova is not configured. Add VITE_GEMINI_API_KEY to .env.local and restart the dev server.',
+          content: 'Not connected to the server',
         },
       ])
       return
