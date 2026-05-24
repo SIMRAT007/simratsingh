@@ -90,7 +90,8 @@ const SiteSettings = () => {
       games: true,
       music: true,
       weather: true,
-      contact: true
+      contact: true,
+      cv: true
     },
     
     // Tip of the Day
@@ -223,6 +224,7 @@ const SiteSettings = () => {
     { key: 'contributions', label: 'Contributions' },
     { key: 'languages', label: 'Languages' },
     { key: 'organizations', label: 'Organizations' },
+    { key: 'cv', label: 'CV Button' },
     { key: 'games', label: 'Games' },
     { key: 'music', label: 'Music of the Day' },
     { key: 'weather', label: 'Weather' },

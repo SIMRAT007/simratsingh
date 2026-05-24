@@ -22,6 +22,8 @@ import MusicSettings from './pages/MusicSettings'
 import ContributionsSettings from './pages/ContributionsSettings'
 import LanguagesSettings from './pages/LanguagesSettings'
 import OrganizationsSettings from './pages/OrganizationsSettings'
+import ContactSubmissions from './pages/ContactSubmissions'
+import CVSettings from './pages/CVSettings'
 
 const AdminRoutes = () => {
   return (
@@ -41,12 +43,14 @@ const AdminRoutes = () => {
           <Route path="blogs" element={<BlogsSettings />} />
           <Route path="testimonials" element={<TestimonialsSettings />} />
           <Route path="social-media" element={<SocialMediaSettings />} />
+          <Route path="contact-submissions" element={<ContactSubmissions />} />
           <Route path="services" element={<ServicesSettings />} />
           <Route path="quotes" element={<QuotesSettings />} />
           <Route path="music" element={<MusicSettings />} />
           <Route path="contributions" element={<ContributionsSettings />} />
           <Route path="languages" element={<LanguagesSettings />} />
           <Route path="organizations" element={<OrganizationsSettings />} />
+          <Route path="cv" element={<CVSettings />} />
           {/* Redirect /admin/anything-unknown to dashboard */}
           <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
         </Route>
@@ -56,4 +60,3 @@ const AdminRoutes = () => {
 }
 
 export default AdminRoutes
-

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { doc, onSnapshot, collection } from 'firebase/firestore'
 import { db, isFirebaseConfigured } from '../firebase/config'
+import { normalizeCvData } from '../data/defaultCvData'
 
 // Default settings when Firebase is not configured or data not available
 const defaultSettings = {
@@ -26,7 +27,8 @@ const defaultSettings = {
     games: true,
     music: true,
     weather: true,
-    contact: true
+    contact: true,
+    cv: true
   },
   
   // Copyright
@@ -485,6 +487,92 @@ export const useMusicSettings = () => {
     )
 
     return () => unsubscribe()
+  }, [])
+
+  return { settings, loading }
+}
+
+export const useCVSettings = () => {
+  const [cvData, setCvData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [projectsData, setProjectsData] = useState([])
+  const [experienceData, setExperienceData] = useState([])
+  const settings = useMemo(
+    () => normalizeCvData(cvData || {}, projectsData, experienceData),
+    [cvData, projectsData, experienceData]
+  )
+
+  useEffect(() => {
+    if (!isFirebaseConfigured || !db) {
+      setLoading(false)
+      return
+    }
+
+    let cvLoaded = false
+    let projectsLoaded = false
+    let experienceLoaded = false
+
+    const checkLoading = () => {
+      if (cvLoaded && projectsLoaded && experienceLoaded) {
+        setLoading(false)
+      }
+    }
+
+    // Fetch CV settings
+    const cvUnsubscribe = onSnapshot(
+      doc(db, 'settings', 'cv'),
+      (docSnap) => {
+        setCvData(docSnap.exists() ? docSnap.data() : null)
+        cvLoaded = true
+        checkLoading()
+      },
+      () => {
+        cvLoaded = true
+        checkLoading()
+      }
+    )
+
+    // Fetch projects collection
+    const projectsUnsubscribe = onSnapshot(
+      collection(db, 'projects'),
+      (snapshot) => {
+        const projects = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        setProjectsData(projects)
+        projectsLoaded = true
+        checkLoading()
+      },
+      () => {
+        projectsLoaded = true
+        checkLoading()
+      }
+    )
+
+    // Fetch experience collection
+    const experienceUnsubscribe = onSnapshot(
+      collection(db, 'experience'),
+      (snapshot) => {
+        const experience = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        setExperienceData(experience)
+        experienceLoaded = true
+        checkLoading()
+      },
+      () => {
+        experienceLoaded = true
+        checkLoading()
+      }
+    )
+
+    return () => {
+      cvUnsubscribe()
+      projectsUnsubscribe()
+      experienceUnsubscribe()
+    }
   }, [])
 
   return { settings, loading }

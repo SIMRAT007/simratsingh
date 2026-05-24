@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { useSiteSettings } from '../hooks/useSiteSettings'
 import QRCodeSection from './QRCodeSection'
+import { db, isFirebaseConfigured } from '../firebase/config'
 
 const Contact = () => {
   const { settings } = useSiteSettings()
@@ -46,29 +48,28 @@ const Contact = () => {
     setSubmitStatus({ type: '', message: '' })
     
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+      if (!isFirebaseConfigured || !db) {
+        throw new Error('Firebase is not configured')
+      }
+
+      await addDoc(collection(db, 'contact_submissions'), {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+        status: 'new',
+        source: 'portfolio_contact_form',
+        createdAt: serverTimestamp()
       })
 
-      const data = await response.json()
-
-      if (data.success) {
-        setSubmitStatus({ type: 'success', message: data.message })
-        setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
-        
-        // Reset success state after 3 seconds
-        setTimeout(() => setSubmitStatus({ type: '', message: '' }), 3000)
-      } else {
-        setSubmitStatus({ type: 'error', message: data.message || 'Failed to send message' })
-      }
+      setSubmitStatus({ type: 'success', message: 'Message saved. I will get back to you shortly.' })
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
+      setTimeout(() => setSubmitStatus({ type: '', message: '' }), 3000)
     } catch (error) {
       setSubmitStatus({ 
         type: 'error', 
-        message: 'Something went wrong. Please try again later.' 
+        message: 'Something went wrong. Please try again later.'
       })
     } finally {
       setIsSubmitting(false)

@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../firebase/AuthContext'
-import { ADMIN_EMAIL } from '../firebase/config'
+import { ADMIN_EMAILS, isAdminEmail } from '../firebase/config'
 
 const ProtectedRoute = ({ children }) => {
   const { currentUser, loading, logout } = useAuth()
@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   // Logged in but not the authorized admin - show access denied and sign out
-  if (currentUser.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+  if (!isAdminEmail(currentUser.email)) {
     // Force logout unauthorized user
     logout()
     
@@ -36,7 +36,7 @@ const ProtectedRoute = ({ children }) => {
           </div>
           <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
           <p className="text-gray-400 mb-6">
-            You are not authorized to access this area. This incident has been logged.
+            Signed in as {currentUser.email}, but the configured admin email is {ADMIN_EMAILS.join(', ')}.
           </p>
           <a 
             href="/" 

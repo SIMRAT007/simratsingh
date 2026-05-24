@@ -24,6 +24,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import TipOfTheDay from './components/TipOfTheDay'
+import GeminiChatbot from './components/GeminiChatbot'
 import { useSiteSettings } from './hooks/useSiteSettings'
 
 function App() {
@@ -225,6 +226,7 @@ function App() {
       <Footer />
       <ScrollToTop />
       <TipOfTheDay />
+      <GeminiChatbot />
     </div>
   )
 }

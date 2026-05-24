@@ -27,6 +27,8 @@ const ExperienceSettings = () => {
     location: '',
     description: '',
     technologies: '',
+    linkLabel: '',
+    linkUrl: '',
     order: 0
   }
 
@@ -375,6 +377,29 @@ const ExperienceSettings = () => {
                     placeholder="React, Node.js, MongoDB..."
                     className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-gray-600"
                   />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-400 text-sm font-medium mb-2">Link Label</label>
+                    <input
+                      type="text"
+                      value={editingExp.linkLabel}
+                      onChange={(e) => setEditingExp(prev => ({ ...prev, linkLabel: e.target.value }))}
+                      placeholder="Company Website"
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-gray-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 text-sm font-medium mb-2">Link URL</label>
+                    <input
+                      type="text"
+                      value={editingExp.linkUrl}
+                      onChange={(e) => setEditingExp(prev => ({ ...prev, linkUrl: e.target.value }))}
+                      placeholder="https://company.com"
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-gray-600"
+                    />
+                  </div>
                 </div>
 
                 <div>

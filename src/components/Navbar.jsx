@@ -15,6 +15,7 @@ const Navbar = () => {
 
   // Get logo from Firebase or use default
   const logoSrc = settings.logoUrl || logo
+  const cvEnabled = settings.sections?.cv !== false
 
   // Get notifications from Firebase - wait for loading to complete
   const notificationsEnabled = !loading && settings.notificationsEnabled !== false
@@ -192,15 +193,17 @@ const Navbar = () => {
             {/* Desktop Right Side - Notification + View CV Button */}
             <div className="hidden md:flex items-center gap-3">
               <NotificationBell />
-              <button
-                onClick={() => setShowCVModal(true)}
-                className="flex items-center gap-2 px-4 py-2 border border-black rounded-full text-sm font-medium hover:bg-black hover:text-white transition-all duration-300"
-              >
-                Let's View CV
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+              {cvEnabled && (
+                <button
+                  onClick={() => setShowCVModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 border border-black rounded-full text-sm font-medium hover:bg-black hover:text-white transition-all duration-300"
+                >
+                  Let's View CV
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
             </div>
 
             {/* Mobile Right Side - Notification + Menu Button */}
@@ -458,7 +461,7 @@ const Navbar = () => {
       </div>
 
       {/* CV Modal */}
-      <CVModal isOpen={showCVModal} onClose={() => setShowCVModal(false)} />
+      {cvEnabled && <CVModal isOpen={showCVModal} onClose={() => setShowCVModal(false)} />}
 
       {/* CSS for animations */}
       <style>{`

@@ -34,7 +34,7 @@ firestore-debug.log
 ui-debug.log
 firebase.json.backup
 .firebaserc.backup
-.rules
+firestore.rules
 .md
 
 # Editor directories and files

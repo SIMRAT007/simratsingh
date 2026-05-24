@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase/config'
 import { Link } from 'react-router-dom'
@@ -23,58 +23,59 @@ const Dashboard = () => {
     contactSubmissions: 0
   })
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+
+  const fetchStats = useCallback(async () => {
+    setLoading(true)
+    setRefreshing(true)
+    try {
+      // Fetch counts from all Firestore collections
+      const collections = [
+        'projects',
+        'blogs',
+        'testimonials',
+        'skills',
+        'experience',
+        'achievements',
+        'certifications',
+        'education',
+        'hobbies',
+        'services',
+        'quotes',
+        'music',
+        'socialMedia_youtube',
+        'socialMedia_linkedin',
+        'socialMedia_instagram',
+        'contact_submissions'
+      ]
+      
+      const counts = {}
+      
+      for (const col of collections) {
+        const key = col === 'socialMedia_youtube' ? 'youtube' :
+                   col === 'socialMedia_linkedin' ? 'linkedin' :
+                   col === 'socialMedia_instagram' ? 'instagram' :
+                   col === 'contact_submissions' ? 'contactSubmissions' : col
+
+        try {
+          const snapshot = await getDocs(collection(db, col))
+          counts[key] = snapshot.size
+        } catch (error) {
+          counts[key] = 0
+        }
+      }
+      
+      setStats(counts)
+    } catch (error) {
+    } finally {
+      setLoading(false)
+      setRefreshing(false)
+    }
+  }, [])
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Fetch counts from all Firestore collections
-        const collections = [
-          'projects',
-          'blogs',
-          'testimonials',
-          'skills',
-          'experience',
-          'achievements',
-          'certifications',
-          'education',
-          'hobbies',
-          'services',
-          'quotes',
-          'music',
-          'socialMedia_youtube',
-          'socialMedia_linkedin',
-          'socialMedia_instagram',
-          'contact_submissions'
-        ]
-        
-        const counts = {}
-        
-        for (const col of collections) {
-          try {
-            const snapshot = await getDocs(collection(db, col))
-            // Map collection names to stat keys
-            const key = col === 'socialMedia_youtube' ? 'youtube' :
-                       col === 'socialMedia_linkedin' ? 'linkedin' :
-                       col === 'socialMedia_instagram' ? 'instagram' :
-                       col === 'contact_submissions' ? 'contactSubmissions' : col
-            counts[key] = snapshot.size
-          } catch (error) {
-            const key = col === 'socialMedia_youtube' ? 'youtube' :
-                       col === 'socialMedia_linkedin' ? 'linkedin' :
-                       col === 'socialMedia_instagram' ? 'instagram' :
-                       col === 'contact_submissions' ? 'contactSubmissions' : col
-            counts[key] = 0
-          }
-        }
-        
-        setStats(counts)
-      } catch (error) {
-      }
-      setLoading(false)
-    }
-
     fetchStats()
-  }, [])
+  }, [fetchStats])
 
   const statCards = [
     { 
@@ -187,6 +188,18 @@ const Dashboard = () => {
       path: '/admin/services' 
     },
     { 
+      label: 'Contact Messages', 
+      value: stats.contactSubmissions, 
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21.75 6.75v10.5A2.25 2.25 0 0119.5 19.5h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
+      ), 
+      color: 'from-orange-500/20 via-orange-600/10 to-orange-700/5', 
+      borderColor: 'border-orange-500/30',
+      path: '/admin/contact-submissions' 
+    },
+    { 
       label: 'Quotes', 
       value: stats.quotes, 
       icon: (
@@ -248,7 +261,8 @@ const Dashboard = () => {
   // Calculate totals
   const totalContent = stats.projects + stats.blogs + stats.testimonials + 
                        stats.experience + stats.achievements + stats.certifications + 
-                       stats.education + stats.hobbies + stats.services + stats.quotes
+                       stats.education + stats.hobbies + stats.services + stats.quotes +
+                       stats.contactSubmissions
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -259,13 +273,37 @@ const Dashboard = () => {
             <h1 className="text-4xl font-bold text-white mb-2">Dashboard</h1>
             <p className="text-gray-400 text-lg">Welcome back! Here's an overview of your portfolio.</p>
           </div>
-          <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-900/50 border border-gray-800 rounded-xl">
-            <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-gray-400 text-sm">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              type="button"
+              onClick={fetchStats}
+              disabled={refreshing}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-medium rounded-xl hover:bg-gray-200 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+            >
+              <svg className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 006.34 5.34L4 7.68M4 15a8 8 0 0013.66 3.66L20 16.32" />
+              </svg>
+              {refreshing ? 'Refreshing' : 'Refresh'}
+            </button>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gray-900/50 border border-gray-800 rounded-xl">
+              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-gray-400 text-sm">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={fetchStats}
+          disabled={refreshing}
+          className="md:hidden inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-medium rounded-xl hover:bg-gray-200 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+        >
+          <svg className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 006.34 5.34L4 7.68M4 15a8 8 0 0013.66 3.66L20 16.32" />
+          </svg>
+          {refreshing ? 'Refreshing' : 'Refresh'}
+        </button>
       </div>
 
       {/* Summary Card */}
@@ -421,7 +459,7 @@ const Dashboard = () => {
             <h2 className="text-xl font-semibold text-white">Quick Links</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {['Projects', 'Blogs', 'Experience', 'Skills', 'Social Media', 'Music'].map((link) => (
+            {['Projects', 'Blogs', 'Experience', 'Skills', 'Social Media', 'Contact Submissions', 'Music'].map((link) => (
               <Link
                 key={link}
                 to={`/admin/${link.toLowerCase().replace(' ', '-')}`}
@@ -438,4 +476,3 @@ const Dashboard = () => {
 }
 
 export default Dashboard
-

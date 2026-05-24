@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../firebase/AuthContext'
-import { isFirebaseConfigured, ADMIN_EMAIL } from '../firebase/config'
+import { ADMIN_EMAILS, isFirebaseConfigured, isAdminEmail } from '../firebase/config'
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('')
@@ -13,10 +13,11 @@ const AdminLogin = () => {
   
   const { login, currentUser } = useAuth()
   const navigate = useNavigate()
+  const configuredAdminText = ADMIN_EMAILS.join(', ')
 
   // Redirect if already logged in as admin
   useEffect(() => {
-    if (currentUser && currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+    if (currentUser && isAdminEmail(currentUser.email)) {
       navigate('/admin/dashboard')
     }
   }, [currentUser, navigate])
@@ -69,7 +70,7 @@ const AdminLogin = () => {
     }
 
     // Check if email is allowed (case insensitive)
-    if (email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) {
+    if (!isAdminEmail(email)) {
       setAttempts(prev => prev + 1)
       if (attempts >= 4) {
         setLockoutTime(Date.now() + 60000) // 1 minute lockout
@@ -86,11 +87,11 @@ const AdminLogin = () => {
     
     if (result.success) {
       // Double-check the logged in user is the admin
-      if (result.user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+      if (isAdminEmail(result.user?.email)) {
         setAttempts(0)
         navigate('/admin/dashboard')
       } else {
-        setError('Access denied.')
+        setError(`Signed in as ${result.user?.email || 'this user'}, but the configured admin email is ${configuredAdminText}.`)
       }
     } else {
       setAttempts(prev => prev + 1)

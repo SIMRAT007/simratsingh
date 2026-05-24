@@ -242,6 +242,23 @@ const Experience = () => {
                       </span>
                     ))}
                   </div>
+
+                  {/* Link */}
+                  {(exp.linkUrl || exp.companyWebsite) && (
+                    <div className={`mt-3 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
+                      <a
+                        href={exp.linkUrl || exp.companyWebsite}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-xs text-gray-400 hover:text-white transition-colors"
+                      >
+                        {exp.linkLabel || 'Company Website'}
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                  )}
                 </div>
 
                 {/* Empty space for alternating layout */}
