@@ -20,14 +20,16 @@ const QUICK_PROMPTS = [
   'How can I contact Simrat?',
 ]
 
+const preprocessContent = (content) => {
+  return content
+    .replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '[$1](mailto:$1)')
+    .replace(/(\+?[\d\s\-\(\)]{10,})/g, '[$1](tel:$1)')
+    .replace(/(https?:\/\/[^\s]+)/g, '[$1]($1)')
+    .replace(/([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?![\w])/g, '[$1](https://$1)')
+}
+
 const createMarkdownComponents = ({ onCvLinkClick }) => ({
-  p: ({ children }) => {
-    const text = typeof children === 'string' ? children : String(children)
-    const linkedText = text
-      .replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '[$1](mailto:$1)')
-      .replace(/(\+?[\d\s\-\(\)]{10,})/g, '[$1](tel:$1)')
-    return <p className="mb-2 last:mb-0">{linkedText}</p>
-  },
+  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
   ul: ({ children }) => <ul className="mb-2 list-disc space-y-1 pl-4 last:mb-0">{children}</ul>,
   ol: ({ children }) => <ol className="mb-2 list-decimal space-y-1 pl-4 last:mb-0">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,
@@ -656,7 +658,7 @@ const GeminiChatbot = () => {
                       <p className="whitespace-pre-wrap">{message.content}</p>
                     ) : (
                       <ReactMarkdown components={markdownComponents}>
-                        {message.content}
+                        {preprocessContent(message.content)}
                       </ReactMarkdown>
                     )}
                   </div>
