@@ -20,12 +20,42 @@ const QUICK_PROMPTS = [
   'How can I contact Simrat?',
 ]
 
-const preprocessContent = (content) => {
-  return content
-    .replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '[$1](mailto:$1)')
-    .replace(/(\+?[\d\s\-\(\)]{10,})/g, '[$1](tel:$1)')
-    .replace(/(https?:\/\/[^\s]+)/g, '[$1]($1)')
-    .replace(/([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?![\w])/g, '[$1](https://$1)')
+const AutoLinkText = ({ text }) => {
+  if (!text || typeof text !== 'string') return text
+  
+  const parts = text.split(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|(\+?[\d\s\-\(\)]{10,})|(https?:\/\/[^\s]+)/g)
+  
+  return parts.map((part, index) => {
+    if (!part) return null
+    
+    try {
+      if (part.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+        return <a key={index} href={`mailto:${part}`} className="font-semibold underline decoration-current underline-offset-2">{part}</a>
+      }
+      
+      if (part.match(/^\+?[\d\s\-\(\)]{10,}$/)) {
+        return <a key={index} href={`tel:${part}`} className="font-semibold underline decoration-current underline-offset-2">{part}</a>
+      }
+      
+      if (part.match(/^https?:\/\//)) {
+        return (
+          <a 
+            key={index} 
+            href={part} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="font-semibold underline decoration-current underline-offset-2"
+          >
+            {part}
+          </a>
+        )
+      }
+    } catch (e) {
+      return part
+    }
+    
+    return part
+  })
 }
 
 const createMarkdownComponents = ({ onCvLinkClick }) => ({
@@ -657,9 +687,9 @@ const GeminiChatbot = () => {
                     {message.role === 'user' ? (
                       <p className="whitespace-pre-wrap">{message.content}</p>
                     ) : (
-                      <ReactMarkdown components={markdownComponents}>
-                        {preprocessContent(message.content)}
-                      </ReactMarkdown>
+                      <p className="whitespace-pre-wrap">
+                        <AutoLinkText text={message.content} />
+                      </p>
                     )}
                   </div>
                 </div>

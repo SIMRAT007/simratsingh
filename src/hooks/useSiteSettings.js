@@ -368,7 +368,7 @@ const defaultSocialMediaSettings = {
   youtubeHandle: '@simratsingh',
   youtubeProfileUrl: 'https://youtube.com/@simratsingh',
   linkedinHandle: 'simratsingh',
-  linkedinProfileUrl: 'https://linkedin.com/in/simratsingh',
+  linkedinProfileUrl: 'https://www.linkedin.com/in/simratsingh007',
   instagramHandle: '@simrat.dev',
   instagramProfileUrl: 'https://instagram.com/simrat.dev'
 }
