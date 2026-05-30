@@ -150,6 +150,12 @@ const buildNovaSystemInstruction = ({ cvData, siteSettings, liveExperience, live
     `${item.name}${item.issuer ? `, ${item.issuer}` : ''}`
   ))
 
+  const ensureHttps = (url) => {
+    if (!url) return ''
+    if (url.startsWith('http://') || url.startsWith('https://')) return url
+    return `https://${url}`
+  }
+
   return `
 You are Nova, Simrat Singh's AI portfolio assistant.
 
@@ -173,10 +179,10 @@ Tagline: ${siteSettings.tagline || ''}
 Summary: ${cvData.objective || siteSettings.siteDescription || ''}
 Location: ${siteSettings.currentLocation || ''}
 Hometown: ${siteSettings.hometown || ''}
-Website: ${siteSettings.siteUrl || ''}
+Website: ${ensureHttps(siteSettings.siteUrl)}
 Email: ${siteSettings.email || ''}
-LinkedIn: ${siteSettings.linkedin || ''}
-GitHub: ${siteSettings.github || ''}
+LinkedIn: ${ensureHttps(siteSettings.linkedin)}
+GitHub: ${ensureHttps(siteSettings.github)}
 
 Contacts:
 ${contacts}
